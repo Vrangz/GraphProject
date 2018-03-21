@@ -1,7 +1,7 @@
 import tkinter as tk
 from Helper import Helper
 import OptionsPage
-from DataInput import DataInput
+from DataManagement import DataManagement
 
 
 class SizeInput:
@@ -26,7 +26,7 @@ class SizeInput:
                 .pack(side="top", pady="10")
             tk.Entry(self.root, textvariable=self.columns).pack(side="top", pady="10")
 
-        tk.Button(self.root, text="Continue", command=lambda: self.jump_if_correct(DataInput)) \
+        tk.Button(self.root, text="Continue", command=lambda: self.jump_if_correct(DataManagement)) \
             .pack(side="top", pady="50")
 
         tk.Button(self.root, text="previous page", command=lambda: self.h.jump_to_page(OptionsPage.OptionsPage)) \
