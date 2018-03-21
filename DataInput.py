@@ -9,36 +9,43 @@ class DataInput:
         self.rows = kwargs["rows"]
         self.columns = kwargs["columns"]
         self.option = kwargs["option"]
+        self.text_label = {0: "Adjacency Matrix Data Input",
+                           1: "Adjacency List Data Input",
+                           2: "Incidence Matrix Data Input"}
         self.h = Helper(self.root)
-        # array of StringVar
-        self.matrix = [[tk.StringVar() for _ in range(self.columns)] for _ in range(self.rows)]
+        # Adjacency List can have 1 less edges than vertexes in graph
+        if self.option == 1:
+            self.columns -= 1
+        self.matrix_int = [[int for _ in range(self.columns)] for _ in range(self.rows)]
+        self.matrix_sv = [[tk.StringVar() for _ in range(self.columns)] for _ in range(self.rows)]
         self.initialize_widgets()
 
     def initialize_widgets(self):
-        tk.Label(self.root, justify="center", text="Adjacency Matrix Data Input", font=self.h.LARGE_FONT) \
+        # Label
+        tk.Label(self.root, justify="center", text=self.text_label[self.option], font=self.h.LARGE_FONT) \
             .grid(row=0, column=0, columnspan=20)
 
+        # Drawing Input Fields
         for row in range(self.rows):
             for column in range(self.columns):
                 if row == 0:
-                    tk.Label(self.root, text=column + 1).grid(row=1, column=column+1)
+                    tk.Label(self.root, text=column + 1).grid(row=1, column=column + 1)
                 if column == 0:
-                    tk.Label(self.root, text=row + 1).grid(row=row+2, column=0)
+                    tk.Label(self.root, text=row + 1).grid(row=row + 2, column=0)
 
-                tk.Entry(self.root, width=2, textvariable=self.matrix[row][column]) \
+                tk.Entry(self.root, width=2, textvariable=self.matrix_sv[row][column]) \
                     .grid(row=row + 2, column=column + 1, pady=1, padx=1)
-                self.matrix[row][column].set("0")
+                if self.option != 1:
+                    self.matrix_sv[row][column].set("0")
 
+        # Buttons
         tk.Button(self.root, text="draw graph", command=self.draw_graph).grid(row=self.rows + 9, columnspan=self.rows)
         tk.Button(self.root, text="previous page",
-                  command=lambda: self.h.jump_to_page(SizeInput.SizeInput, option=self.option))\
+                  command=lambda: self.h.jump_to_page(SizeInput.SizeInput, option=self.option)) \
             .grid(row=self.rows + 10, columnspan=self.rows)
-        print(self.rows, self.columns, self.option)
 
     def draw_graph(self):
-        mtx = [[int for _ in range(self.columns)] for _ in range(self.rows)]
         for row in range(self.rows):
             for column in range(self.columns):
-                mtx[row][column] = int(tk.StringVar.get(self.matrix[row][column]))
-        print(mtx)
-        self.root.g
+                self.matrix_int[row][column] = int(tk.StringVar.get(self.matrix_sv[row][column]))
+        print(self.matrix_int)

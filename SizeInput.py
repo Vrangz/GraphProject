@@ -16,7 +16,7 @@ class SizeInput:
         self.initialize_widgets()
 
     def initialize_widgets(self):
-        tk.Label(self.root, justify="center", text="Define number of vortexes [2-10]", font=self.h.TEXT_FONT)\
+        tk.Label(self.root, justify="center", text="Define number of vortexes [2-10]", font=self.h.TEXT_FONT) \
             .pack(side="top", pady="10")
 
         tk.Entry(self.root, textvariable=self.rows).pack(side="top", pady="10")
@@ -26,10 +26,10 @@ class SizeInput:
                 .pack(side="top", pady="10")
             tk.Entry(self.root, textvariable=self.columns).pack(side="top", pady="10")
 
-        tk.Button(self.root, text="Continue", command=lambda: self.jump_if_correct(DataInput))\
+        tk.Button(self.root, text="Continue", command=lambda: self.jump_if_correct(DataInput)) \
             .pack(side="top", pady="50")
 
-        tk.Button(self.root, text="previous page", command=lambda: self.h.jump_to_page(OptionsPage.OptionsPage))\
+        tk.Button(self.root, text="previous page", command=lambda: self.h.jump_to_page(OptionsPage.OptionsPage)) \
             .pack(side="bottom", pady="10")
 
     def jump_if_correct(self, page):
