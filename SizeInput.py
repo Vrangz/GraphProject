@@ -1,5 +1,5 @@
 import tkinter as tk
-from Helper import Helper
+from Helper import *
 import OptionsPage
 from DataManagement import DataManagement
 
@@ -21,7 +21,7 @@ class SizeInput:
 
         tk.Entry(self.root, textvariable=self.rows).pack(side="top", pady="10")
 
-        if self.option == 2:
+        if self.option == INCIDENCE_MATRIX_OPTION:
             tk.Label(self.root, justify="center", text="Define number of edges [2-10]", font=self.h.TEXT_FONT) \
                 .pack(side="top", pady="10")
             tk.Entry(self.root, textvariable=self.columns).pack(side="top", pady="10")
@@ -34,7 +34,7 @@ class SizeInput:
 
     def jump_if_correct(self, page):
         self.int_rows = int(tk.StringVar.get(self.rows))
-        if self.option == 2:
+        if self.option == INCIDENCE_MATRIX_OPTION:
             self.int_columns = int(tk.StringVar.get(self.columns))
         else:
             self.int_columns = self.int_rows
