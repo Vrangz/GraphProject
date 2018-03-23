@@ -16,14 +16,10 @@ class DataManagement:
         self.text_label = {ADJACENCY_MATRIX_OPTION: "Adjacency Matrix Data Input",
                            ADJACENCY_LIST_OPTION: "Adjacency List Data Input",
                            INCIDENCE_MATRIX_OPTION: "Incidence Matrix Data Input"}
-        # Adjacency List can have 1 less edges than vertexes in graph
-        if self.option == ADJACENCY_LIST_OPTION:
-            self.columns -= 1
-        self.matrix_int = [[int for _ in range(self.columns)] for _ in range(self.rows)]
+        self.matrix_int = kwargs["matrix"]
         self.matrix_sv = [[tk.StringVar() for _ in range(self.columns)] for _ in range(self.rows)]
         self.initialize_widgets()
         self.graph = nx.Graph()
-        print(self.rows, self.columns, self.option)
 
     def initialize_widgets(self):
         self.init_label()
@@ -47,16 +43,6 @@ class DataManagement:
                   command=lambda: self.h.jump_to_page(SizeInput.SizeInput, option=self.option)) \
             .grid(row=self.rows + 15, columnspan=self.columns)
 
-    def convert_to_adjacency_matrix(self):
-        if self.option == ADJACENCY_LIST_OPTION:
-            self.set_edges(self.rows, self.columns, self.matrix_int)
-            matrix = nx.adjacency_matrix(self.graph)
-            print(matrix)
-
-        if self.option == INCIDENCE_MATRIX_OPTION:
-            matrix = self.incidence_matrix_to_adjacency(self.matrix_int)
-            print(matrix)
-
     def init_entries(self):
         for row in range(self.rows):
             for column in range(self.columns):
@@ -67,7 +53,24 @@ class DataManagement:
                     label.grid(row=row + 2, column=0)
 
                 entry = self.draw_entry(row, column, "normal")
+                if self.option == ADJACENCY_MATRIX_OPTION:
+                    if self.matrix_int[row][column] != int:
+                        entry.insert(0, str(self.matrix_int[row][column]))
                 entry.grid(row=row + 2, column=column + 1, pady=1, padx=1)
+
+    def convert_to_adjacency_matrix(self):
+        if self.option == ADJACENCY_LIST_OPTION:
+            self.set_edges(self.rows, self.columns, self.matrix_int)
+            matrix = nx.adjacency_matrix(self.graph)
+            self.h.jump_to_page(DataManagement, rows=matrix.shape[0], columns=matrix.shape[1],
+                                option=ADJACENCY_MATRIX_OPTION, matrix=matrix)
+            print(matrix)
+            ##############################################################
+
+        if self.option == INCIDENCE_MATRIX_OPTION:
+            matrix = self.incidence_matrix_to_adjacency(self.matrix_int)
+            self.h.jump_to_page(DataManagement, rows=matrix.shape[0], columns=matrix.shape[1],
+                                option=ADJACENCY_MATRIX_OPTION, matrix=matrix)
 
     def draw_graph(self):
         self.string_var_to_int_array()
@@ -76,12 +79,13 @@ class DataManagement:
             self.graph.add_node(vertex+1)
 
         # set edges
-        if self.option == (ADJACENCY_MATRIX_OPTION or ADJACENCY_LIST_OPTION):
+        if self.option == ADJACENCY_MATRIX_OPTION:
             self.set_edges(self.rows, self.columns, self.matrix_int)
-        else:
+        if self.option == ADJACENCY_LIST_OPTION:
+            self.set_edges(self.rows, self.columns, self.matrix_int)
+        if self.option == INCIDENCE_MATRIX_OPTION:
             matrix = self.incidence_matrix_to_adjacency(self.matrix_int)
             self.set_edges(matrix.shape[0], matrix.shape[1], matrix)
-
         self.draw_plot()
 
     def set_edges(self, rows, columns, array):

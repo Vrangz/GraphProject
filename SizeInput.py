@@ -11,8 +11,8 @@ class SizeInput:
         self.h = Helper(self.root)
         self.rows = tk.StringVar()
         self.columns = tk.StringVar()
-        self.int_rows = 0
-        self.int_columns = 0
+        self.rows_int = 0
+        self.columns_int = 0
         self.initialize_widgets()
 
     def initialize_widgets(self):
@@ -33,10 +33,17 @@ class SizeInput:
             .pack(side="bottom", pady="10")
 
     def jump_if_correct(self, page):
-        self.int_rows = int(tk.StringVar.get(self.rows))
+        self.rows_int = int(tk.StringVar.get(self.rows))
+
         if self.option == INCIDENCE_MATRIX_OPTION:
-            self.int_columns = int(tk.StringVar.get(self.columns))
+            self.columns_int = int(tk.StringVar.get(self.columns))
         else:
-            self.int_columns = self.int_rows
-        if self.int_rows and self.int_columns in range(2, 11):
-            self.h.jump_to_page(page, rows=self.int_rows, columns=self.int_columns, option=self.option)
+            self.columns_int = self.rows_int
+
+        if (self.rows_int and self.columns_int) in range(2, 11):
+            # Adjacency List can have 1 less edges than vertexes in graph
+            if self.option == ADJACENCY_LIST_OPTION:
+                self.columns_int -= 1
+            matrix_int = [[int for _ in range(self.columns_int)] for _ in range(self.rows_int)]
+            self.h.jump_to_page(page, rows=self.rows_int, columns=self.columns_int, option=self.option,
+                                matrix=matrix_int)
