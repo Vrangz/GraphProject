@@ -61,11 +61,13 @@ class DataManagement:
     def convert_to_adjacency_matrix(self):
         if self.option == ADJACENCY_LIST_OPTION:
             self.set_edges(self.rows, self.columns, self.matrix_int)
-            matrix = nx.adjacency_matrix(self.graph)
-            self.h.jump_to_page(DataManagement, rows=matrix.shape[0], columns=matrix.shape[1],
-                                option=ADJACENCY_MATRIX_OPTION, matrix=matrix)
-            print(matrix)
-            ##############################################################
+            matrix_input = np.array(nx.adjacency_matrix(self.graph))
+            matrix_output = [[int for _ in range(matrix_input.shape[1])] for _ in range(matrix_input.shape[0])]
+            for row in range(matrix_input.shape[0]):
+                for column in range(matrix_input.shape[1]):
+                    matrix_output[row][column] = int((str(matrix_input[row][column]).replace(".0", "")))
+            self.h.jump_to_page(DataManagement, rows=matrix_input.shape[0], columns=matrix_input.shape[1],
+                                option=ADJACENCY_MATRIX_OPTION, matrix=matrix_output)
 
         if self.option == INCIDENCE_MATRIX_OPTION:
             matrix = self.incidence_matrix_to_adjacency(self.matrix_int)
