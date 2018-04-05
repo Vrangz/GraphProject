@@ -43,8 +43,16 @@ class OptionsPage:
         tk.Button(self.root, text="incidence matrix",
                   command=self.incidence_matrix_data_input).grid(row=7, column=10, columnspan=2)
 
+        tk.Label(self.root, text="Create a graph using form.\n"
+                                 "Define number of vertexes and then\n"
+                                 "join edges as you like\n",
+                 font=self.h.TEXT_FONT).grid(row=1, column=15, sticky="w")
+
+        tk.Button(self.root, text="form",
+                  command=self.form_input).grid(row=7, column=15, columnspan=2)
+
         tk.Button(self.root, text="previous page", command=lambda: self.h.jump_to_page(MainWindow.MainWindow)) \
-            .grid(row=8, column=5, sticky="s")
+            .grid(row=8, column=6, sticky="s", columnspan=2)
 
     def adjacency_matrix_data_input(self):
         self.h.jump_to_page(SizeInput, option=0)
@@ -54,3 +62,6 @@ class OptionsPage:
 
     def incidence_matrix_data_input(self):
         self.h.jump_to_page(SizeInput, option=2)
+
+    def form_input(self):
+        self.h.jump_to_page(SizeInput, option=3)

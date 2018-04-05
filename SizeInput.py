@@ -41,7 +41,6 @@ class SizeInput:
             self.columns_int = self.rows_int
 
         if (self.rows_int and self.columns_int) in range(2, 11):
-            # Adjacency List can have 1 less edges than vertexes in graph
             if self.option == ADJACENCY_LIST_OPTION:
                 self.columns_int -= 1
             matrix_int = [[int for _ in range(self.columns_int)] for _ in range(self.rows_int)]
