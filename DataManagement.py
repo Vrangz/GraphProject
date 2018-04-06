@@ -69,18 +69,22 @@ class DataManagement:
                             entry.insert(0, str(self.matrix_int[row][column]))
                     entry.grid(row=row + 2, column=column + 1, pady=1, padx=1)
         else:
-            tk.Entry(self.root, width=2, justify="center", textvariable=self.matrix_sv[0][0]).grid(row=self.rows, column=1)
-            tk.Entry(self.root, width=2, justify="center", textvariable=self.matrix_sv[0][1]).grid(row=self.rows, column=4)
+            tk.Entry(self.root, width=2, justify="center", textvariable=self.matrix_sv[0][0]).\
+                grid(row=self.rows, column=1)
+            tk.Entry(self.root, width=2, justify="center", textvariable=self.matrix_sv[0][1]).\
+                grid(row=self.rows, column=4)
 
     def convert_to_adjacency_matrix(self):
         if self.option == ADJACENCY_LIST_OPTION:
             self.set_edges(self.rows, self.columns, self.matrix_int)
-            matrix_input = np.array(nx.adjacency_matrix(self.graph))
+            matrix_input = np.array(nx.to_numpy_matrix(self.graph))
             matrix_output = [[int for _ in range(matrix_input.shape[1])] for _ in range(matrix_input.shape[0])]
+
             for row in range(matrix_input.shape[0]):
                 for column in range(matrix_input.shape[1]):
-                    matrix_output[row][column] = int((str(matrix_input[row][column]).replace(".0", "")))
-            self.h.jump_to_page(DataManagement, rows=matrix_input.shape[0], columns=matrix_input.shape[1],
+                    matrix_output[row][column] = int(str(matrix_input[row][column]).replace(".0", ""))
+
+            self.h.jump_to_page(DataManagement, rows=matrix_input.shape[0], columns=matrix_input.shape[0],
                                 option=ADJACENCY_MATRIX_OPTION, matrix=matrix_output)
 
         if self.option == INCIDENCE_MATRIX_OPTION:
