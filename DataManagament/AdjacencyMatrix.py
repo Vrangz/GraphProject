@@ -1,5 +1,7 @@
 import tkinter as tk
 import networkx as nx
+from collections import deque
+from itertools import chain
 from DataManagament.DataManagement import DataManagement
 
 
@@ -15,9 +17,14 @@ class AdjacencyMatrix(DataManagement):
 
     def init_buttons(self):
         super().init_buttons()
-        tk.Button(self.root, text="is eulerian", command=self.is_eulerian).grid(row=self.rows + 10, columnspan=self.rows)
+        tk.Button(self.root, text="is eulerian", command=self.is_eulerian).\
+            grid(row=self.rows + 10, columnspan=self.rows)
         tk.Button(self.root, text="is hamiltonian", command=self.is_hamiltonian). \
             grid(row=self.rows + 11, columnspan=self.rows)
+        tk.Button(self.root, text="BFS", command=self.bfs). \
+            grid(row=self.rows + 12, columnspan=self.rows)
+        tk.Button(self.root, text="bridges", command=self.bridges). \
+            grid(row=self.rows + 13, columnspan=self.rows)
 
     def is_eulerian(self):
         eulerian = nx.is_eulerian(self.graph)
@@ -68,6 +75,46 @@ class AdjacencyMatrix(DataManagement):
         for vertex in path:
             print(vertex+1)
         print(path[0]+1, "\n")
+
+    def bfs(self):
+        G = self.graph
+        root = 1
+        edges = self.bfs_edges(G, root)
+        nodes = [root] + [v for u, v in edges]
+        print(nodes)
+
+    def bfs_edges(self, G, source, reverse=False):
+        if reverse and G.is_directed():
+            successors = G.predecessors
+        else:
+            successors = G.neighbors
+        for e in self.generic_bfs_edges(G, source, successors):
+            yield e
+
+    def generic_bfs_edges(self, G, source, neighbors=None):
+        visited = {source}
+        queue = deque([(source, neighbors(source))])
+        while queue:
+            parent, children = queue[0]
+            try:
+                child = next(children)
+                if child not in visited:
+                    yield parent, child
+                    visited.add(child)
+                    queue.append((child, neighbors(child)))
+            except StopIteration:
+                queue.popleft()
+
+    def bridges(self):
+        print(list(self.util_bridges()))
+
+    def util_bridges(self):
+        root = 1
+        chains = nx.chain_decomposition(self.graph, root)
+        chain_edges = set(chain.from_iterable(chains))
+        for u, v in self.graph.edges():
+            if (u, v) not in chain_edges and (v, u) not in chain_edges:
+                yield u, v
 
     def draw_graph(self):
         self.graph.clear()
