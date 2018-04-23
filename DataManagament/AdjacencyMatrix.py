@@ -8,6 +8,7 @@ from DataManagament.DataManagement import DataManagement
 class AdjacencyMatrix(DataManagement):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
+        self.color_option = tk.StringVar()
         self.initialize_widgets()
 
     def initialize_widgets(self):
@@ -23,8 +24,10 @@ class AdjacencyMatrix(DataManagement):
             grid(row=self.rows + 11, columnspan=self.rows)
         tk.Button(self.root, text="BFS", command=self.bfs). \
             grid(row=self.rows + 12, columnspan=self.rows)
+        tk.Button(self.root, text="color graph", command=self.bfs). \
+            grid(row=self.rows + 13, column=self.columns//2-1, columnspan=self.rows)
         tk.Button(self.root, text="bridges", command=self.bridges). \
-            grid(row=self.rows + 13, columnspan=self.rows)
+            grid(row=self.rows + 14, columnspan=self.rows)
 
     def is_eulerian(self):
         eulerian = nx.is_eulerian(self.graph)
@@ -116,6 +119,18 @@ class AdjacencyMatrix(DataManagement):
             if (u, v) not in chain_edges and (v, u) not in chain_edges:
                 yield u, v
 
+    def color_graph(self):
+        option = tk.StringVar.get(self.color_option)
+        print(option)
+        if option == 0:
+            nx.coloring.greedy_color(self.graph)
+
+        if option == 1:
+            nx.coloring.greedy_color(self.graph, strategy="largest_first")
+
+        if option == 2:
+            nx.coloring.greedy_color(self.graph, strategy="random_sequential")
+
     def draw_graph(self):
         self.graph.clear()
         self.add_vertexes()
@@ -141,3 +156,6 @@ class AdjacencyMatrix(DataManagement):
                 if self.matrix_int[row][column] != int:
                     entry.insert(0, str(self.matrix_int[row][column]))
                 entry.grid(row=row + 2, column=column + 1, pady=1, padx=1)
+
+        tk.Entry(self.root, width=2, textvariable=self.color_option)\
+            .grid(row=self.rows + 13, column=self.columns//2+1, columnspan=self.rows)

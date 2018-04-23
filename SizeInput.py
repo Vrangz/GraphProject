@@ -25,7 +25,7 @@ class SizeInput:
         tk.Entry(self.root, textvariable=self.rows).pack(side="top", pady="10")
 
         if self.option == INCIDENCE_MATRIX_OPTION:
-            tk.Label(self.root, justify="center", text="Define number of edges [2-10]", font=self.h.TEXT_FONT) \
+            tk.Label(self.root, justify="center", text="Define number of edges [2-14]", font=self.h.TEXT_FONT) \
                 .pack(side="top", pady="10")
             tk.Entry(self.root, textvariable=self.columns).pack(side="top", pady="10")
 
@@ -43,7 +43,7 @@ class SizeInput:
         else:
             self.columns_int = self.rows_int
 
-        if (self.rows_int and self.columns_int) in range(2, 11):
+        if (self.rows_int and self.columns_int) in range(2, 15):
             if self.option == ADJACENCY_LIST_OPTION:
                 self.columns_int -= 1
             matrix_int = [[int for _ in range(self.columns_int)] for _ in range(self.rows_int)]
