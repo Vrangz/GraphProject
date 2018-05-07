@@ -19,6 +19,7 @@ class DataManagement:
         self.matrix_int = kwargs["matrix"]
         self.matrix_sv = [[tk.StringVar() for _ in range(self.columns)] for _ in range(self.rows)]
         self.graph = nx.Graph()
+        self.color_map = ["red"]
 
     def initialize_widgets(self):
         self.init_label()
@@ -67,5 +68,5 @@ class DataManagement:
 
     def draw_plot(self):
         plt.subplot(111)
-        nx.draw(self.graph, with_labels=True, font_weight="bold")
+        nx.draw(self.graph, with_labels=True, font_weight="bold", node_color=self.color_map)
         plt.show()

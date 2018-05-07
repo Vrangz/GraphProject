@@ -18,14 +18,14 @@ class AdjacencyMatrix(DataManagement):
 
     def init_buttons(self):
         super().init_buttons()
-        tk.Button(self.root, text="is eulerian", command=self.is_eulerian).\
+        tk.Button(self.root, text="is eulerian", command=self.is_eulerian). \
             grid(row=self.rows + 10, columnspan=self.rows)
         tk.Button(self.root, text="is hamiltonian", command=self.is_hamiltonian). \
             grid(row=self.rows + 11, columnspan=self.rows)
         tk.Button(self.root, text="BFS", command=self.bfs). \
             grid(row=self.rows + 12, columnspan=self.rows)
-        tk.Button(self.root, text="color graph", command=self.bfs). \
-            grid(row=self.rows + 13, column=self.columns//2-1, columnspan=self.rows)
+        tk.Button(self.root, text="color graph", command=self.color_graph). \
+            grid(row=self.rows + 13, column=self.columns // 2 - 2, columnspan=self.rows)
         tk.Button(self.root, text="bridges", command=self.bridges). \
             grid(row=self.rows + 14, columnspan=self.rows)
 
@@ -76,8 +76,8 @@ class AdjacencyMatrix(DataManagement):
     def print_solution(self, path):
         print("Graph is hamiltonian - following is one Hamiltonian Cycle")
         for vertex in path:
-            print(vertex+1)
-        print(path[0]+1, "\n")
+            print(vertex + 1)
+        print(path[0] + 1, "\n")
 
     def bfs(self):
         G = self.graph
@@ -121,15 +121,33 @@ class AdjacencyMatrix(DataManagement):
 
     def color_graph(self):
         option = tk.StringVar.get(self.color_option)
-        print(option)
+        if option == "":
+            option = 0
+
+        option = int(option)
+
+        d = {}
         if option == 0:
-            nx.coloring.greedy_color(self.graph)
+            print("normal")
+            d = nx.coloring.greedy_color(self.graph, strategy="connected_sequential_bfs")
 
         if option == 1:
-            nx.coloring.greedy_color(self.graph, strategy="largest_first")
+            print("largest first")
+            d = nx.coloring.greedy_color(self.graph, strategy="largest_first")
 
         if option == 2:
-            nx.coloring.greedy_color(self.graph, strategy="random_sequential")
+            print("random sequential")
+            d = nx.coloring.greedy_color(self.graph, strategy="random_sequential")
+
+        print("not sorted: {}".format(d))
+        # print("sorted: {}".format(sorted(d.items())))
+        color_dictionary = {0: "red", 1: "green", 2: "blue", 3: "yellow", 4: "orange", 5: "purple"}
+        self.color_map.clear()
+        for key, value in sorted(d.items()):
+            self.color_map.append(color_dictionary[value])
+
+        # print("color map: {}\n".format(self.color_map))
+        self.draw_plot()
 
     def draw_graph(self):
         self.graph.clear()
@@ -157,5 +175,5 @@ class AdjacencyMatrix(DataManagement):
                     entry.insert(0, str(self.matrix_int[row][column]))
                 entry.grid(row=row + 2, column=column + 1, pady=1, padx=1)
 
-        tk.Entry(self.root, width=2, textvariable=self.color_option)\
-            .grid(row=self.rows + 13, column=self.columns//2+1, columnspan=self.rows)
+        tk.Entry(self.root, width=5, textvariable=self.color_option) \
+            .grid(row=self.rows + 13, column=self.columns // 2 + 2, columnspan=self.rows)
