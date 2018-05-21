@@ -36,7 +36,7 @@ class DataManagement:
 
         tk.Button(self.root, text="previous page",
                   command=lambda: self.h.jump_to_page(SizeInput.SizeInput, option=self.option)) \
-            .grid(row=self.rows + 15, columnspan=self.rows)
+            .grid(row=self.rows + 20, columnspan=self.rows)
 
     def init_entries(self):
         pass
@@ -68,5 +68,6 @@ class DataManagement:
 
     def draw_plot(self):
         plt.subplot(111)
-        nx.draw(self.graph, with_labels=True, font_weight="bold", node_color=self.color_map)
+        pos = nx.spring_layout(self.graph)
+        nx.draw(self.graph, pos=pos, with_labels=True, font_weight="bold", node_color=self.color_map)
         plt.show()

@@ -9,6 +9,8 @@ class AdjacencyMatrix(DataManagement):
     def __init__(self, root, **kwargs):
         super().__init__(root, **kwargs)
         self.color_option = tk.StringVar()
+        self.source = tk.StringVar()
+        self.destination = tk.StringVar()
         self.initialize_widgets()
 
     def initialize_widgets(self):
@@ -28,6 +30,8 @@ class AdjacencyMatrix(DataManagement):
             grid(row=self.rows + 13, column=self.columns // 2 - 2, columnspan=self.rows)
         tk.Button(self.root, text="bridges", command=self.bridges). \
             grid(row=self.rows + 14, columnspan=self.rows)
+        tk.Button(self.root, text="shortest path", command=self.shortest_path). \
+            grid(row=self.rows + 15, columnspan=self.rows)
 
     def is_eulerian(self):
         eulerian = nx.is_eulerian(self.graph)
@@ -159,7 +163,30 @@ class AdjacencyMatrix(DataManagement):
         for row in range(rows):
             for column in range(columns):
                 if array[row][column] > 0:
-                    self.graph.add_edge(row + 1, column + 1)
+                    self.graph.add_edge(row + 1, column + 1, weight=array[row][column])
+
+    def shortest_path(self):
+        source = tk.StringVar.get(self.source)
+        destination = tk.StringVar.get(self.destination)
+        if source == "":
+            source = 1
+        else:
+            source = int(source)
+
+        if destination == "":
+            destination = self.rows
+        else:
+            destination = int(destination)
+
+        path = nx.shortest_path(self.graph, source=source, target=destination, weight="weight")
+        length = nx.shortest_path_length(self.graph, source=source, target=destination, weight="weight")
+        print("shortest path: {}, with weight: {}".format(path, length))
+
+        all_paths = dict(nx.all_pairs_dijkstra_path(self.graph))
+        for node in all_paths.keys():
+            temp = dict(all_paths[node])
+            for dest_node in temp.keys():
+                print("path from node {} to node {}: {}".format(node, dest_node, all_paths[node][dest_node]))
 
     def init_entries(self):
         for row in range(self.rows):
@@ -177,3 +204,9 @@ class AdjacencyMatrix(DataManagement):
 
         tk.Entry(self.root, width=5, textvariable=self.color_option) \
             .grid(row=self.rows + 13, column=self.columns // 2 + 2, columnspan=self.rows)
+
+        tk.Entry(self.root, width=5, textvariable=self.source) \
+            .grid(row=self.rows + 15, column=self.columns // 2 + 2, columnspan=self.rows)
+
+        tk.Entry(self.root, width=5, textvariable=self.destination) \
+            .grid(row=self.rows + 15, column=self.columns // 2 + 4, columnspan=self.rows)
